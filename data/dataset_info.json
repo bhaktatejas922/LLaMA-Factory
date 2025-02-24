@@ -8,6 +8,15 @@
   "alpaca_zh_demo": {
     "file_name": "alpaca_zh_demo.json"
   },
+  "code_update_dataset_0-2048": {
+    "file_name": "code_update_dataset_0-2048.json"
+  },
+  "code_update_dataset_2049-4096": {
+    "file_name": "code_update_dataset_2049-4096.json"
+  },
+  "code_update_dataset_4097-8192": {
+    "file_name": "code_update_dataset_4097-8192.json"
+  },
   "glaive_toolcall_en_demo": {
     "file_name": "glaive_toolcall_en_demo.json",
     "formatting": "sharegpt",
