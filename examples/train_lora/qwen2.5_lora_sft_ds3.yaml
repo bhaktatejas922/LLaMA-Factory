@@ -18,7 +18,9 @@ lora_target: all
 deepspeed: examples/deepspeed/ds_z3_config.json
 
 ### dataset
-dataset: code_update_dataset_4096,code_update_dataset_8192
+# dataset: code_update_dataset_0-2048,code_update_dataset_2049-4096,code_update_dataset_4097-8192
+# dataset: code_update_dataset_4097-8192
+dataset: code_update_dataset_2048
 template: qwen
 cutoff_len: 8192
 max_samples: 200000

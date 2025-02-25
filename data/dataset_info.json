@@ -8,8 +8,8 @@
   "alpaca_zh_demo": {
     "file_name": "alpaca_zh_demo.json"
   },
-  "code_update_dataset_0-2048": {
-    "file_name": "code_update_dataset_0-2048.json"
+  "code_update_dataset_2048": {
+    "file_name": "code_update_dataset_2048.json"
   },
   "code_update_dataset_2049-4096": {
     "file_name": "code_update_dataset_2049-4096.json"
