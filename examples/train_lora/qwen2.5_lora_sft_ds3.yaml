@@ -1,6 +1,8 @@
 ### model
 model_name_or_path: Qwen/Qwen2.5-Coder-7B-Instruct
 trust_remote_code: true
+quantization_bit: 4
+quantization_method: bitsandbytes 
 
 ### export
 export_dir: saves/qwen2.5-coder-7b/lora/sft
@@ -22,8 +24,8 @@ deepspeed: examples/deepspeed/ds_z3_config.json
 # dataset: code_update_dataset_4097-8192
 dataset: code_update_dataset_2048
 template: qwen
-cutoff_len: 8192
-max_samples: 200000
+cutoff_len: 7100
+max_samples: 2000000
 overwrite_cache: true
 preprocessing_num_workers: 64
 
@@ -31,7 +33,7 @@ preprocessing_num_workers: 64
 output_dir: saves/qwen2.5-coder-7b/lora/sft
 overwrite_output_dir: false  # Set to false to enable checkpoint resumption
 logging_steps: 10
-save_steps: 400
+save_steps: 150
 save_total_limit: 2
 plot_loss: true
 
@@ -39,7 +41,7 @@ plot_loss: true
 per_device_train_batch_size: 6
 gradient_accumulation_steps: 4
 learning_rate: 1.0e-4
-num_train_epochs: 1
+num_train_epochs: 5 
 lr_scheduler_type: inverse_sqrt
 warmup_ratio: 0.1
 bf16: true
