@@ -1,9 +1,10 @@
 ### model
 model_name_or_path: Qwen/Qwen2.5-Coder-7B-Instruct
 trust_remote_code: true
-quantization_bit: 4
-quantization_method: bitsandbytes 
-adapter_name_or_path: cudaoom/morphv0-large-0-4096_0224
+# quantization_bit: 4
+# quantization_method: bitsandbytes 
+# adapter_name_or_path: cudaoom/morphv0-large-0-4096_0224
+adapter_name_or_path: cudaoom/morphv1-emergency-backup
 
 ### export
 export_dir: saves/qwen2.5-coder-7b/lora/sft
@@ -21,11 +22,11 @@ lora_target: all
 # deepspeed: examples/deepspeed/ds_z3_config.json
 
 ### dataset
-# dataset: code_update_dataset_0-2048
-# dataset: code_update_dataset_2049-4096
+# dataset: code_update_dataset_0-2048,code_update_dataset_2049-4096
+# dataset: 
 dataset: code_update_dataset_4097-7000
 template: qwen
-cutoff_len: 7100
+cutoff_len: 9100
 max_samples: 500000
 overwrite_cache: true
 preprocessing_num_workers: 64
@@ -39,17 +40,17 @@ save_total_limit: 2
 plot_loss: true
 
 ### train
-per_device_train_batch_size: 3
+per_device_train_batch_size: 1
 gradient_accumulation_steps: 4
 learning_rate: 1.0e-4
-num_train_epochs: 2
-lr_scheduler_type: inverse_sqrt
+num_train_epochs: 4
+lr_scheduler_type: cosine
 warmup_ratio: 0.1
 bf16: true
 ddp_timeout: 180000000
 
 ### eval
 val_size: 0.1
-per_device_eval_batch_size: 2
+per_device_eval_batch_size: 1
 eval_strategy: steps
 eval_steps: 500 
