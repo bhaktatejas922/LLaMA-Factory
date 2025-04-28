@@ -17,6 +17,10 @@ do_train: true
 finetuning_type: lora
 lora_rank: 16
 lora_target: all
+<<<<<<< Updated upstream
+=======
+# deepspeed: examples/deepspeed/ds_z3_config.json
+>>>>>>> Stashed changes
 deepspeed: examples/deepspeed/ds_z2_config.json
 
 ### dataset
