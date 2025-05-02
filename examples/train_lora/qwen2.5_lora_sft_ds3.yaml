@@ -1,4 +1,5 @@
 ### model
+# model_name_or_path: cudaoom/mmorphv2-emergency-backup
 model_name_or_path: Qwen/Qwen2.5-Coder-7B-Instruct
 trust_remote_code: true
 # quantization_bit: 8
@@ -6,7 +7,7 @@ trust_remote_code: true
 # adapter_name_or_path: cudaoom/morphv1-7b-0302-4096-7000
 ### export
 export_dir: saves/morphv2-7b/lora/sft
-export_hub_model_id: "cudaoom/morphv2-7b-lora-sft_2049-4096"
+export_hub_model_id: "cudaoom/morphv2-7b-lora-sft_1000-16800"
 export_size: 5
 export_device: cpu
 export_legacy_format: false
@@ -17,20 +18,20 @@ do_train: true
 finetuning_type: lora
 lora_rank: 16
 lora_target: all
-<<<<<<< Updated upstream
-=======
 # deepspeed: examples/deepspeed/ds_z3_config.json
->>>>>>> Stashed changes
 deepspeed: examples/deepspeed/ds_z2_config.json
 
 ### dataset
 # dataset: code_update_dataset_0-2048
-dataset: code_update_dataset_2049-4096
-# dataset: code_update_dataset_4097-7000
+# dataset: code_update_dataset_2049-4096
 # dataset: code_update_dataset_8000-14000
+# dataset: code_update_dataset_1000-16800
+dataset: code_update_dataset_0-4096
+# dataset: code_update_dataset_4097-8192
+# dataset: code_update_dataset_8193-16384
 template: qwen
-cutoff_len: 64000
-max_samples: 300000
+cutoff_len: 4800
+max_samples: 400000
 overwrite_cache: true
 preprocessing_num_workers: 64
 
@@ -38,17 +39,17 @@ preprocessing_num_workers: 64
 output_dir: saves/morphv2-7b/lora/sft
 overwrite_output_dir: false  # Set to false to enable checkpoint resumption
 logging_steps: 10
-save_steps: 150
-save_total_limit: 2
+save_steps: 200
+save_total_limit: 7
 plot_loss: true
 
 ### train
-per_device_train_batch_size: 8
-gradient_accumulation_steps: 4
+per_device_train_batch_size: 3
+gradient_accumulation_steps: 8
 learning_rate: 1.0e-4
-num_train_epochs: 4
+num_train_epochs: 3
 lr_scheduler_type: cosine
-warmup_ratio: 0.1
+warmup_ratio: 0.03
 bf16: true
 ddp_timeout: 180000000
 
