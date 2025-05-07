@@ -6,7 +6,12 @@ trust_remote_code: true
 # quantization_method: bitsandbytes 
 
 # change the adapter_name_or_path to the checkpoint you want to load
+<<<<<<< HEAD
 adapter_name_or_path: saves/morphv2-7b/lora/sft/checkpoint-2429
+=======
+# adapter_name_or_path: saves/morphv2-7b/lora/sft/checkpoint-2429
+adapter_name_or_path: saves/morphv2-7b/lora/sft2/checkpoint-21859
+>>>>>>> b2f562fc (yaml)
 
 ### export
 export_dir: saves/morphv2-7b/lora/sft
@@ -30,8 +35,8 @@ deepspeed: examples/deepspeed/ds_z2_config.json
 # dataset: code_update_dataset_8000-14000
 # dataset: code_update_dataset_1000-16800
 # dataset: code_update_dataset_0-4096
-dataset: code_update_dataset_4097-8192
-# dataset: code_update_dataset_8193-16384
+# dataset: code_update_dataset_4097-8192
+dataset: code_update_dataset_8193-16384
 template: qwen
 cutoff_len: 9000
 max_samples: 600000
@@ -57,9 +62,10 @@ bf16: true
 ddp_timeout: 180000000
 flash_attn: fa2
 use_dora: true
+ddp_find_unused_parameters: false
 
 ### eval
-val_size: 0.1
+val_size: 0.05
 per_device_eval_batch_size: 1
 eval_strategy: steps
 eval_steps: 200 
