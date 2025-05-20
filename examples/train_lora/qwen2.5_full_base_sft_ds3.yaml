@@ -8,12 +8,12 @@ trust_remote_code: true
 # change the adapter_name_or_path to the checkpoint you want to load
 # adapter_name_or_path: saves/morphv2-7b/lora/sft/checkpoint-2429
 # adapter_name_or_path: saves/morphv2-14b-base/lora/sft/checkpoint-200
-adapter_name_or_path: saves/morphv2-14b-base/lora/sft2/checkpoint-1954
-output_dir: saves/morphv2-14b-base/lora/sft3
+# adapter_name_or_path: saves/morphv2-14b-base/lora/sft2/checkpoint-1954
+output_dir: saves/morphv2-14b-base/full/sft3
 overwrite_output_dir: false  # Set to false to enable checkpoint resumption
 
 ### export
-export_dir: saves/morphv2-14b-base/lora/sft3
+export_dir: saves/morphv2-14b-base/full/sft3
 export_hub_model_id: "cudaoom/morphv2-14b-base-lora-sft_1000-16800"
 export_size: 5
 export_device: cpu
@@ -22,9 +22,10 @@ export_legacy_format: false
 ### method
 stage: sft
 do_train: true
-finetuning_type: lora
-lora_rank: 16
-lora_target: all
+finetuning_type: full
+# lora_rank: 16
+# lora_target: all
+# use_dora: true
 # deepspeed: examples/deepspeed/ds_z3_config.json
 deepspeed: examples/deepspeed/ds_z2_config.json
 
@@ -33,11 +34,11 @@ deepspeed: examples/deepspeed/ds_z2_config.json
 # dataset: code_update_dataset_2049-4096
 # dataset: code_update_dataset_8000-14000
 # dataset: code_update_dataset_1000-16800
-# dataset: code_update_dataset_0-4096
+dataset: code_update_dataset_0-4096
 # dataset: code_update_dataset_4097-8192
-dataset: code_update_dataset_8193-16384
+# dataset: code_update_dataset_8193-16384
 template: qwen
-cutoff_len: 32768
+cutoff_len: 4800
 max_samples: 400000
 overwrite_cache: true
 preprocessing_num_workers: 64
@@ -45,24 +46,23 @@ preprocessing_num_workers: 64
 ### output (change the output_dir to a new dir for each new dataset you train on)
 logging_steps: 10
 save_steps: 200
-save_total_limit: 7
+save_total_limit: 2
 plot_loss: true
 
 ### train
 per_device_train_batch_size: 1
 gradient_accumulation_steps: 8
-learning_rate: 4.0e-5
+learning_rate: 3.3e-5
 num_train_epochs: 1
 lr_scheduler_type: cosine
 warmup_ratio: 0.05
 bf16: true
 ddp_timeout: 180000000
 flash_attn: fa2
-use_dora: true
 ddp_find_unused_parameters: false
 
 ### eval
 val_size: 0.05
 per_device_eval_batch_size: 1
 eval_strategy: steps
-eval_steps: 50 
+eval_steps: 200
