@@ -8,8 +8,8 @@ trust_remote_code: true
 # change the adapter_name_or_path to the checkpoint you want to load
 # adapter_name_or_path: saves/morphv2-7b/lora/sft/checkpoint-2429
 # adapter_name_or_path: saves/morphv2-14b-base/lora/sft/checkpoint-200
-adapter_name_or_path: saves/morphv2-14b-base/lora/sft/checkpoint-250
-output_dir: saves/morphv2-14b-base/lora/sft1
+# adapter_name_or_path: saves/morphv2-14b-base/lora/sft
+output_dir: saves/morphv2-14b-base/lora/fa_and_mis
 overwrite_output_dir: true  # Set to false to enable checkpoint resumption
 
 ### export

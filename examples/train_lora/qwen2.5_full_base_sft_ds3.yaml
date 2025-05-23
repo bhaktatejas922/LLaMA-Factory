@@ -1,6 +1,7 @@
 ### model
 # model_name_or_path: cudaoom/mmorphv2-emergency-backup
-model_name_or_path: cudaoom/morphv2-14b-base-full
+# model_name_or_path: cudaoom/morphv2-14b-base-full
+model_name_or_path: Qwen/Qwen2.5-Coder-14B
 trust_remote_code: true
 # quantization_bit: 8
 # quantization_method: bitsandbytes 
@@ -9,11 +10,11 @@ trust_remote_code: true
 # adapter_name_or_path: saves/morphv2-7b/lora/sft/checkpoint-2429
 # adapter_name_or_path: saves/morphv2-14b-base/lora/sft/checkpoint-200
 # adapter_name_or_path: saves/morphv2-14b-base/lora/sft2/checkpoint-1954
-output_dir: saves/morphv2-14b-base/full/sft3
-overwrite_output_dir: false  # Set to false to enable checkpoint resumption
+output_dir: saves/morphv2-14b-base/full/new_sft1
+overwrite_output_dir: true  # Set to false to enable checkpoint resumption
 
 ### export
-export_dir: saves/morphv2-14b-base/full/sft3
+export_dir: saves/morphv2-14b-base/full/new_sft
 export_hub_model_id: "cudaoom/morphv2-14b-base-lora-sft_1000-16800"
 export_size: 5
 export_device: cpu
@@ -34,11 +35,11 @@ deepspeed: examples/deepspeed/ds_z2_config.json
 # dataset: code_update_dataset_2049-4096
 # dataset: code_update_dataset_8000-14000
 # dataset: code_update_dataset_1000-16800
-dataset: code_update_dataset_0-4096
+dataset: code_update_dataset_100-4097
 # dataset: code_update_dataset_4097-8192
 # dataset: code_update_dataset_8193-16384
 template: qwen
-cutoff_len: 4800
+cutoff_len: 4200
 max_samples: 400000
 overwrite_cache: true
 preprocessing_num_workers: 64

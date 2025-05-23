@@ -75,6 +75,10 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
             self.accelerator.clip_grad_norm_ = MethodType(clip_grad_norm_old_version, self.accelerator)
             self.add_callback(BAdamCallback)
 
+        # Initialize high loss tracking for training
+        self.high_loss_file = "high_loss.jsonl"
+        self.loss_threshold = 0.03
+
     @override
     def create_optimizer(self) -> "torch.optim.Optimizer":
         if self.optimizer is None:
@@ -94,6 +98,69 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
             return torch.utils.data.SequentialSampler(self.train_dataset)
 
         return super()._get_train_sampler()
+
+    @override
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+        """
+        Override compute_loss to capture high loss examples and save them to JSONL file.
+        """
+        # Get the loss and outputs from the parent method
+        if return_outputs:
+            loss, outputs = super().compute_loss(model, inputs, return_outputs=True, num_items_in_batch=num_items_in_batch)
+        else:
+            loss = super().compute_loss(model, inputs, return_outputs=False, num_items_in_batch=num_items_in_batch)
+            outputs = None
+
+        # Only save high loss examples during training (not evaluation)
+        if self.model.training and loss.item() > self.loss_threshold:
+            self._save_high_loss_example(inputs, loss.item())
+
+        if return_outputs:
+            return loss, outputs
+        else:
+            return loss
+
+    def _save_high_loss_example(self, inputs, loss_value):
+        """
+        Save high loss examples to a JSONL file.
+        """
+        try:
+            # Decode the input tokens to get readable text
+            input_ids = inputs.get("input_ids")
+            labels = inputs.get("labels")
+            
+            # Get tokenizer from processing_class (for newer transformers) or tokenizer attribute
+            tokenizer = getattr(self, "processing_class", None) or getattr(self, "tokenizer", None)
+            
+            if input_ids is not None and tokenizer is not None:
+                # Decode input text
+                if input_ids.dim() > 1:
+                    # Take the first example from the batch
+                    input_text = tokenizer.decode(input_ids[0], skip_special_tokens=False)
+                    
+                    # Decode labels if available
+                    label_text = None
+                    if labels is not None:
+                        # Replace IGNORE_INDEX with pad token for decoding
+                        labels_for_decode = labels[0].clone()
+                        labels_for_decode[labels_for_decode == IGNORE_INDEX] = tokenizer.pad_token_id
+                        label_text = tokenizer.decode(labels_for_decode, skip_special_tokens=False)
+                    
+                    # Create the example record
+                    example = {
+                        "loss": loss_value,
+                        "input_text": input_text,
+                        "label_text": label_text,
+                        "global_step": self.state.global_step if hasattr(self, "state") else None,
+                    }
+                    
+                    # Append to JSONL file
+                    with open(self.high_loss_file, "a", encoding="utf-8") as f:
+                        f.write(json.dumps(example, ensure_ascii=False) + "\n")
+                        
+        except Exception as e:
+            # Don't let saving examples break training
+            logger.warning(f"Failed to save high loss example: {e}")
 
     @override
     def prediction_step(
@@ -117,9 +184,9 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
         loss, generated_tokens, _ = super().prediction_step(
             model, inputs, prediction_loss_only=prediction_loss_only, ignore_keys=ignore_keys, **gen_kwargs
         )
+        
         if generated_tokens is not None and self.args.predict_with_generate:
-            generated_tokens[:, : inputs["input_ids"].size(-1)] = self.processing_class.pad_token_id
-            generated_tokens = generated_tokens.contiguous()
+            generated_tokens = generated_tokens[:, inputs["input_ids"].size(-1) :]
 
         return loss, generated_tokens, labels
 
@@ -158,3 +225,10 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
         with open(output_prediction_file, "w", encoding="utf-8") as f:
             for text, pred, label in zip(decoded_inputs, decoded_preds, decoded_labels):
                 f.write(json.dumps({"prompt": text, "predict": pred, "label": label}, ensure_ascii=False) + "\n")
+    
+    @override
+    def evaluate(self, *args, **kwargs):
+        # Call the parent evaluate method
+        metrics = super().evaluate(*args, **kwargs)
+        
+        return metrics
